@@ -42,7 +42,7 @@ jobs:
         PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
         PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
         TEST_PROXY: ${{ vars.TEST_PROXY }}
-        ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+        ENVIRONMENT: ${{ vars.PROD_ENVIRONMENT }}
       run: |
         # Stop and remove any existing container
         docker stop scraper-test || true
