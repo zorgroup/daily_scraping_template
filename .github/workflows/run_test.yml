@@ -56,7 +56,7 @@ jobs:
         PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
         PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
         TEST_PROXY: ${{ vars.TEST_PROXY }}
-        ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+        ENVIRONMENT: ${{ vars.TEST_ENVIRONMENT }}
       run: |
         docker run \
           -e DB_HOST_REMOTE \
