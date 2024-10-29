@@ -1,0 +1,77 @@
+name: Run Python Script in Test Environment
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    # Log in to GitHub Container Registry
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.SCRAPER_TEMPLATE_TOKEN }}
+
+    # Build Docker image and tag it with the GitHub Container Registry URL
+    - name: Build Docker Image
+      run: |
+        docker build -t ghcr.io/${{ github.repository_owner }}/scraper-test:latest .
+
+    # Push the Docker image to GitHub Container Registry
+    - name: Push Docker Image to GitHub Container Registry
+      run: |
+        docker push ghcr.io/${{ github.repository_owner }}/scraper-test:latest
+
+    # Run the Docker container in test mode with secrets as environment variables
+    - name: Run Docker Container with Test Environment
+      env:
+        DB_HOST_REMOTE: ${{ vars.DB_HOST_REMOTE }}
+        DB_PORT_REMOTE: ${{ vars.DB_PORT_REMOTE }}
+        DB_PASS_REMOTE: ${{ vars.DB_PASS_REMOTE }}
+        REDIS_DB_NUMBER_REMOTE: ${{ vars.REDIS_DB_NUMBER_REMOTE }}
+        DB_HOST_LOCAL: ${{ vars.DB_HOST_LOCAL }}
+        DB_PORT_LOCAL: ${{ vars.DB_PORT_LOCAL }}
+        DB_PASS_LOCAL: ${{ vars.DB_PASS_LOCAL }}
+        REDIS_DB_NUMBER_LOCAL: ${{ vars.REDIS_DB_NUMBER_LOCAL }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+        PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
+        PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
+        TEST_PROXY: ${{ vars.TEST_PROXY }}
+        ENVIRONMENT: ${{ vars.ENVIRONMENT }}
+      run: |
+        docker run \
+          -e DB_HOST_REMOTE \
+          -e DB_PORT_REMOTE \
+          -e DB_PASS_REMOTE \
+          -e REDIS_DB_NUMBER_REMOTE \
+          -e DB_HOST_LOCAL \
+          -e DB_PORT_LOCAL \
+          -e DB_PASS_LOCAL \
+          -e REDIS_DB_NUMBER_LOCAL \
+          -e AWS_ACCESS_KEY_ID \
+          -e AWS_SECRET_ACCESS_KEY \
+          -e BUCKET_NAME \
+          -e PROXY_ENABLED \
+          -e PROXY_REMOTE_REDIS_KEY \
+          -e TEST_PROXY \
+          -e ENVIRONMENT \
+          ghcr.io/${{ github.repository_owner }}/scraper-test:latest

@@ -1,0 +1,7 @@
+
+boto3
+parsel
+aioredis
+curl_cffi
+python-dotenv
+redis

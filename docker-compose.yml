@@ -1,0 +1,22 @@
+services:
+  scraper:
+    build: .
+    environment:
+      - DB_HOST_REMOTE
+      - DB_PORT_REMOTE
+      - DB_PASS_REMOTE
+      - REDIS_DB_NUMBER_REMOTE
+      - DB_HOST_LOCAL
+      - DB_PORT_LOCAL
+      - DB_PASS_LOCAL
+      - REDIS_DB_NUMBER_LOCAL
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - BUCKET_NAME
+      - PROXY_ENABLED
+      - PROXY_REMOTE_REDIS_KEY
+      - TEST_PROXY
+      - ENVIRONMENT
+    volumes:
+      - .:/app
+    command: python daily_scraping.py

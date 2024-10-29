@@ -1,0 +1,15 @@
+# Ignore Git files and folders
+.git
+.gitignore
+
+# Ignore environment and secret files
+.env
+
+# Ignore node_modules and Python cache
+node_modules
+__pycache__
+*.pyc
+
+# Ignore log files and temp files
+*.log
+tmp/
