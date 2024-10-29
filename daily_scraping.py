@@ -115,6 +115,7 @@ async def scraper(url, product_buffer, proxies=None, test_mode=False):
     html = await fetch_page(url, proxy)
     if html:
         product = parse_page(url, html)
+        print("Hello world")
         print(product)
         product_buffer.append(product)
 
