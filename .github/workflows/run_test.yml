@@ -38,42 +38,6 @@ jobs:
       run: |
         docker push ghcr.io/${{ github.repository_owner }}/scraper:latest
 
-    # Run the main scraper
-    - name: Run Scraper Service
-      env:
-        DB_HOST_REMOTE: ${{ vars.DB_HOST_REMOTE }}
-        DB_PORT_REMOTE: ${{ vars.DB_PORT_REMOTE }}
-        DB_PASS_REMOTE: ${{ vars.DB_PASS_REMOTE }}
-        REDIS_DB_NUMBER_REMOTE: ${{ vars.REDIS_DB_NUMBER_REMOTE }}
-        DB_HOST_LOCAL: ${{ vars.DB_HOST_LOCAL }}
-        DB_PORT_LOCAL: ${{ vars.DB_PORT_LOCAL }}
-        DB_PASS_LOCAL: ${{ vars.DB_PASS_LOCAL }}
-        REDIS_DB_NUMBER_LOCAL: ${{ vars.REDIS_DB_NUMBER_LOCAL }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-        PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
-        PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
-        TEST_PROXY: ${{ vars.TEST_PROXY }}
-      run: |
-        docker run \
-          --name scraper \
-          -e DB_HOST_REMOTE \
-          -e DB_PORT_REMOTE \
-          -e DB_PASS_REMOTE \
-          -e REDIS_DB_NUMBER_REMOTE \
-          -e DB_HOST_LOCAL \
-          -e DB_PORT_LOCAL \
-          -e DB_PASS_LOCAL \
-          -e REDIS_DB_NUMBER_LOCAL \
-          -e AWS_ACCESS_KEY_ID \
-          -e AWS_SECRET_ACCESS_KEY \
-          -e BUCKET_NAME \
-          -e PROXY_ENABLED \
-          -e PROXY_REMOTE_REDIS_KEY \
-          -e TEST_PROXY \
-          ghcr.io/${{ github.repository_owner }}/scraper:latest python /app/daily_scraping_module.py
-
     # Run the test scraper
     - name: Run Test Scraper Service
       env:
@@ -94,7 +58,6 @@ jobs:
         TEST_URLS: ${{ vars.TEST_URLS }}
       run: |
         docker run \
-          --name test_scraper \
           -e DB_HOST_REMOTE \
           -e DB_PORT_REMOTE \
           -e DB_PASS_REMOTE \
@@ -110,4 +73,5 @@ jobs:
           -e PROXY_REMOTE_REDIS_KEY \
           -e TEST_PROXY \
           -e TEST_URLS \
-          ghcr.io/${{ github.repository_owner }}/scraper:latest python /app/daily_scraping_test.py
+          ghcr.io/${{ github.repository_owner }}/scraper:latest \
+          python /app/daily_scraping_test.py
