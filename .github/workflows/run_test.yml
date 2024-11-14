@@ -1,57 +1,57 @@
-name: Run test_scraper Service in Docker Compose
+# name: Run test_scraper Service in Docker Compose
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
+#     - name: Set up Python
+#       uses: actions/setup-python@v2
+#       with:
+#         python-version: '3.9'
 
-    # Install Docker Compose
-    - name: Install Docker Compose
-      run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K[^"]*')" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+#     # Install Docker Compose
+#     - name: Install Docker Compose
+#       run: |
+#         sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -Po '"tag_name": "\K[^"]*')" -o /usr/local/bin/docker-compose
+#         sudo chmod +x /usr/local/bin/docker-compose
 
-    # Log in to GitHub Container Registry
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.SCRAPER_TEMPLATE_TOKEN }}
+#     # Log in to GitHub Container Registry
+#     - name: Log in to GitHub Container Registry
+#       uses: docker/login-action@v2
+#       with:
+#         registry: ghcr.io
+#         username: ${{ github.actor }}
+#         password: ${{ secrets.SCRAPER_TEMPLATE_TOKEN }}
 
-    # Run the test_scraper service in Docker Compose
-    - name: Run test_scraper Service with Docker Compose
-      env:
-        DB_HOST_REMOTE: ${{ vars.DB_HOST_REMOTE }}
-        DB_PORT_REMOTE: ${{ vars.DB_PORT_REMOTE }}
-        DB_PASS_REMOTE: ${{ vars.DB_PASS_REMOTE }}
-        REDIS_DB_NUMBER_REMOTE: ${{ vars.REDIS_DB_NUMBER_REMOTE }}
-        DB_HOST_LOCAL: ${{ vars.DB_HOST_LOCAL }}
-        DB_PORT_LOCAL: ${{ vars.DB_PORT_LOCAL }}
-        DB_PASS_LOCAL: ${{ vars.DB_PASS_LOCAL }}
-        REDIS_DB_NUMBER_LOCAL: ${{ vars.REDIS_DB_NUMBER_LOCAL }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
-        PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
-        PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
-        TEST_PROXY: ${{ vars.TEST_PROXY }}
-        TEST_URLS: ${{ vars.TEST_URLS }}
-      run: |
-        docker-compose up -d test_scraper
+#     # Run the test_scraper service in Docker Compose
+#     - name: Run test_scraper Service with Docker Compose
+#       env:
+#         DB_HOST_REMOTE: ${{ vars.DB_HOST_REMOTE }}
+#         DB_PORT_REMOTE: ${{ vars.DB_PORT_REMOTE }}
+#         DB_PASS_REMOTE: ${{ vars.DB_PASS_REMOTE }}
+#         REDIS_DB_NUMBER_REMOTE: ${{ vars.REDIS_DB_NUMBER_REMOTE }}
+#         DB_HOST_LOCAL: ${{ vars.DB_HOST_LOCAL }}
+#         DB_PORT_LOCAL: ${{ vars.DB_PORT_LOCAL }}
+#         DB_PASS_LOCAL: ${{ vars.DB_PASS_LOCAL }}
+#         REDIS_DB_NUMBER_LOCAL: ${{ vars.REDIS_DB_NUMBER_LOCAL }}
+#         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+#         PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
+#         PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
+#         TEST_PROXY: ${{ vars.TEST_PROXY }}
+#         TEST_URLS: ${{ vars.TEST_URLS }}
+#       run: |
+#         docker-compose up -d test_scraper
