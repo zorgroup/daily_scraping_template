@@ -1,4 +1,4 @@
-name: Run Python Script in Test Environment
+name: Run test_scraper Service in Docker Compose
 
 on:
   push:
@@ -29,18 +29,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.SCRAPER_TEMPLATE_TOKEN }}
 
-    # Build Docker image and tag it with the GitHub Container Registry URL
-    - name: Build Docker Image
-      run: |
-        docker build -t ghcr.io/${{ github.repository_owner }}/scraper-test:latest .
-
-    # Push the Docker image to GitHub Container Registry
-    - name: Push Docker Image to GitHub Container Registry
-      run: |
-        docker push ghcr.io/${{ github.repository_owner }}/scraper-test:latest
-
-    # Run the Docker container in test mode with secrets as environment variables
-    - name: Run Docker Container with Test Environment
+    # Run the test_scraper service in Docker Compose
+    - name: Run test_scraper Service with Docker Compose
       env:
         DB_HOST_REMOTE: ${{ vars.DB_HOST_REMOTE }}
         DB_PORT_REMOTE: ${{ vars.DB_PORT_REMOTE }}
@@ -56,22 +46,6 @@ jobs:
         PROXY_ENABLED: ${{ vars.PROXY_ENABLED }}
         PROXY_REMOTE_REDIS_KEY: ${{ vars.PROXY_REMOTE_REDIS_KEY }}
         TEST_PROXY: ${{ vars.TEST_PROXY }}
-        ENVIRONMENT: ${{ vars.TEST_ENVIRONMENT }}
+        TEST_URLS: ${{ vars.TEST_URLS }}
       run: |
-        docker run \
-          -e DB_HOST_REMOTE \
-          -e DB_PORT_REMOTE \
-          -e DB_PASS_REMOTE \
-          -e REDIS_DB_NUMBER_REMOTE \
-          -e DB_HOST_LOCAL \
-          -e DB_PORT_LOCAL \
-          -e DB_PASS_LOCAL \
-          -e REDIS_DB_NUMBER_LOCAL \
-          -e AWS_ACCESS_KEY_ID \
-          -e AWS_SECRET_ACCESS_KEY \
-          -e BUCKET_NAME \
-          -e PROXY_ENABLED \
-          -e PROXY_REMOTE_REDIS_KEY \
-          -e TEST_PROXY \
-          -e ENVIRONMENT \
-          ghcr.io/${{ github.repository_owner }}/scraper-test:latest
+        docker-compose up -d test_scraper
