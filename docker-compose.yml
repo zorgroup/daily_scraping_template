@@ -2,10 +2,12 @@
 services:
   scraper:
     build: .
+    restart: always
     env_file:
       - .env
     volumes:
       - .:/app
-    command: ["python", "/app/daily_scraping_module.py"]
+    command: python daily_scraping_module.py 
+
 
   
