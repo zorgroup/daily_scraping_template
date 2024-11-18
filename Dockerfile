@@ -12,5 +12,6 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 WORKDIR /app/
 COPY requirements.txt /app/
+COPY daily_scraping_module.py /app/
+COPY daily_scraping_fetch_and_parse.py /app/
 RUN pip install -r requirements.txt
-COPY . /app/
